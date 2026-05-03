@@ -1,50 +1,6 @@
 import React from 'react';
 import { plans } from '../utils/plans.js';
-import { createOrder, verifyPayment } from '../services/paymentService.js';
-
-const Plans = ({ user }) => {
-  const handleSubscribe = async (plan) => {
-    try {
-      const res = await createOrder({ userId: user.userId, planName: plan.name });
-      const { order, subscriptionId } = res.data;
-
-      const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_test_Sa6bsk7sWAecIB', 
-        amount: order.amount,
-        currency: order.currency,
-        name: 'Tweeter',
-        description: `Subscription to ${plan.name} plan`,
-        order_id: order.id,
-        handler: async function (response) {
-          try {
-            const verifyRes = await verifyPayment({
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpaySignature: response.razorpay_signature,
-              subscriptionId
-            });
-            if (verifyRes.data.success) {
-              alert('Payment successful! Your plan is updated.');
-            }
-          } catch (err) {
-            alert('Payment verification failed.');
-          }
-        },
-        prefill: {
-          name: "User",
-          email: "coder7963@gmail.com",
-        },
-        theme: {
-          color: "#1da1f2"
-        }
-      };
-      
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (err) {
-      alert(err.response?.data?.error || 'Failed to initiate payment.');
-    }
-  };
+const Plans = ({ user, onSelectPlan }) => {
 
   return (
     <div className="plans-container container">
@@ -67,7 +23,7 @@ const Plans = ({ user }) => {
               </div>
             </div>
             
-            <button className="btn btn-primary mt-4" onClick={() => handleSubscribe(plan)}>
+            <button className="btn btn-primary mt-4" onClick={() => onSelectPlan(plan)}>
               Choose {plan.name}
             </button>
           </div>

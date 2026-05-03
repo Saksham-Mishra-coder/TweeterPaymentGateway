@@ -11,6 +11,13 @@ const Auth = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('please enter valid email');
+      return;
+    }
+
     try {
       if (isLogin) {
         const res = await login({ email, password });

@@ -3,10 +3,12 @@ import Navbar from '../components/Navbar.js';
 import TweetForm from '../components/TweetForm.js';
 import TweetList from '../components/TweetList.js';
 import Plans from '../components/Plans.js';
+import Payment from './Payment.js';
 
 
 const Home = ({ user, onLogout }) => {
   const [refreshCount, setRefreshCount] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   return (
     <div>
@@ -37,7 +39,18 @@ const Home = ({ user, onLogout }) => {
         </main>
         
         <section className="plans-section">
-          <Plans user={user} />
+          {selectedPlan ? (
+            <Payment 
+              user={user} 
+              plan={selectedPlan} 
+              onBack={() => setSelectedPlan(null)} 
+            />
+          ) : (
+            <Plans 
+              user={user} 
+              onSelectPlan={(plan) => setSelectedPlan(plan)} 
+            />
+          )}
         </section>
       </div>
     </div>
